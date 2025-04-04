@@ -20,7 +20,7 @@ Elle permet de gérer une liste de tâches : création, édition, suppression, e
 
 ``bash
 
-git clone https://github.com/nassim-elaouad/todo-frontend.git
+git clone https://github.com/nassimelaouad/todo-frontend.git
 
 cd todo-frontend
 
