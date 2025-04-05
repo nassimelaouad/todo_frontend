@@ -18,7 +18,7 @@ Elle permet de gérer une liste de tâches : création, édition, suppression, e
 
 1. Clone du repo :
 
-``bash
+```bash
 
 git clone https://github.com/nassimelaouad/todo-frontend.git
 
@@ -27,7 +27,7 @@ cd todo-frontend
 yarn install
 
 yarn dev
-
+```
 ## Fonctionnement du fichier `TodoPage.tsx`
 
 Le composant `TodoPage.tsx` est le cœur de l'application. Il gère toutes les interactions avec l’utilisateur.
