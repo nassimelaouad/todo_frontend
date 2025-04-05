@@ -67,4 +67,4 @@ Le composant `TodoPage.tsx` est le cœur de l'application. Il gère toutes les i
 
 ## Backend 
 
-- https://github.com/nassimelaouad/todo_backend
+- [https://github.com/nassimelaouad/todo_backend](https://github.com/nassimelaouad/todo-backend)
