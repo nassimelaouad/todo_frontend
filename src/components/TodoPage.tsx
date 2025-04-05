@@ -1,30 +1,63 @@
-/**
- * @todo YOU HAVE TO IMPLEMENT THE DELETE AND SAVE TASK ENDPOINT, A TASK CANNOT BE UPDATED IF THE TASK NAME DID NOT CHANGE, YOU'VE TO CONTROL THE BUTTON STATE ACCORDINGLY
- */
-import { Check, Delete } from '@mui/icons-material';
-import { Box, Button, Container, IconButton, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useFetch from '../hooks/useFetch.ts';
-import { Task } from '../index';
+import { Delete } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import useFetch from "../hooks/useFetch.ts";
+import { Task } from "../index";
 
 const TodoPage = () => {
   const api = useFetch();
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [newTaskName, setNewTaskName] = useState(""); // État pour une nouvelle tâche
+  const [taskEditing, setTaskEditing] = useState<{ [id: number]: string }>({});
 
-  const handleFetchTasks = async () => setTasks(await api.get('/tasks'));
+  // Récupérer toutes les tâches depuis le backend
+  const handleFetchTasks = async () => {
+    const fetchedTasks = await api.get("/tasks");
+    setTasks(fetchedTasks);
+  };
 
-  const handleDelete = async (id: number) => {
-    // @todo IMPLEMENT HERE : DELETE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
-  }
-
+  // Ajouter une nouvelle tâche
   const handleSave = async () => {
-    // @todo IMPLEMENT HERE : SAVE THE TASK & REFRESH ALL THE TASKS, DON'T FORGET TO ATTACH THE FUNCTION TO THE APPROPRIATE BUTTON
-  }
+    try {
+      if (!newTaskName.trim()) return; // Empêcher l'ajout de tâches vides
+      await api.post("/tasks", { name: newTaskName });
+      setNewTaskName(""); // Réinitialiser le champ
+      await handleFetchTasks(); // Rafraîchir la liste
+    } catch (error) {
+      console.error("Error saving task:", error);
+    }
+  };
+
+
+  // Supprimer une tâche
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/tasks/${id}`);
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
+  const handleTaskNameChange = (id: number, newName: string) => {
+    setTaskEditing((prev) => ({ ...prev, [id]: newName }));
+  };
 
   useEffect(() => {
-    (async () => {
-      handleFetchTasks();
-    })();
+    handleFetchTasks();
   }, []);
 
   return (
@@ -33,29 +66,65 @@ const TodoPage = () => {
         <Typography variant="h2">HDM Todo List</Typography>
       </Box>
 
-      <Box justifyContent="center" mt={5} flexDirection="column">
-        {
-          tasks.map((task) => (
-            <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={1} width="100%">
-              <TextField size="small" value={task.name} fullWidth sx={{ maxWidth: 350 }} />
-              <Box>
-                <IconButton color="success" disabled>
-                  <Check />
-                </IconButton>
-                <IconButton color="error" onClick={() => {}}>
-                  <Delete />
-                </IconButton>
-              </Box>
-            </Box>
-          ))
-        }
+      {/* Table pour afficher les tâches */}
+      <Box mt={5}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Tâche</TableCell>
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tasks.map((task) => (
+                <TableRow key={task.id}>
+                  <TableCell>
+                    <TextField
+                      size="small"
+                      value={taskEditing[task.id] || task.name}
+                      fullWidth
+                      onChange={(e) =>
+                        handleTaskNameChange(task.id, e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell align="center">
+                
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(task.id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
 
-        <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
-          <Button variant="outlined" onClick={() => {}}>Ajouter une tâche</Button>
-        </Box>
+      {/* Ajouter une nouvelle tâche */}
+      <Box display="flex" justifyContent="center" alignItems="center" mt={3}>
+        <TextField
+          size="small"
+          value={newTaskName}
+          onChange={(e) => setNewTaskName(e.target.value)}
+          fullWidth
+          sx={{ maxWidth: 350 }}
+          placeholder="Nouvelle tâche"
+        />
+        <Button
+          variant="outlined"
+          onClick={handleSave}
+          disabled={!newTaskName.trim()}
+        >
+          Ajouter
+        </Button>
       </Box>
     </Container>
   );
-}
+};
 
 export default TodoPage;
