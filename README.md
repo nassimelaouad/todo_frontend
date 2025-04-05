@@ -28,30 +28,43 @@ yarn install
 
 yarn dev
 
-##  Détails des modifications dans `TodoPage.tsx`
+## Fonctionnement du fichier `TodoPage.tsx`
 
-Le fichier `TodoPage.tsx` constitue le cœur fonctionnel de la partie frontend. Voici un résumé des actions réalisées :
+Le composant `TodoPage.tsx` est le cœur de l'application. Il gère toutes les interactions avec l’utilisateur.
 
-###  Récupération des tâches
-- Utilisation du hook `useEffect()` pour appeler `handleFetchTasks()` au chargement de la page.
-- La fonction `handleFetchTasks` effectue une requête `GET` vers `/tasks` et stocke les données dans l’état local `tasks`.
+### 1\. Récupération des tâches
 
-###  Création de tâche
-- Ajout d’un champ `TextField` contrôlé (`newTaskName`) permettant à l’utilisateur de saisir une nouvelle tâche.
-- Le bouton **"Ajouter"** appelle la fonction `handleSave`, qui :
-  - Vérifie que le champ n’est pas vide
-  - Envoie une requête `POST` à `/tasks`
-  - Rafraîchit la liste des tâches après l’ajout
+-   Lors du chargement de la page (`useEffect`), la fonction `handleFetchTasks()` est appelée.
+-   Elle effectue un appel `GET` à l’API `/tasks` pour récupérer la liste des tâches.
 
-###  Suppression de tâche
-- Chaque tâche a une icône de suppression (`<Delete />`) qui appelle `handleDelete` :
-  - Envoie une requête `DELETE` vers `/tasks/:id`
-  - Met à jour l’état local `tasks` sans la tâche supprimée
+### 2\. Création de tâche
 
-###  Ergonomie & validation
-- Empêche l'ajout de tâches vides (`.trim()` sur le champ de saisie).
-- Utilisation de composants Material UI :
-  - `Table`, `IconButton`, `TextField`, `Typography`, etc.
-  - Pour une interface claire, responsive et accessible.
+-   Un champ `TextField` permet à l’utilisateur de saisir une tâche.
+-   En cliquant sur "Ajouter", la fonction `handleSave()` :
+-   Vérifie que le champ n’est pas vide (`.trim()`)
+-   Envoie une requête `POST` vers `/tasks`
+-   Rafraîchit la liste après l’ajout
 
+### 3\. Suppression de tâche
 
+-   Un bouton avec une icône de suppression est affiché à côté de chaque tâche.
+-   Il appelle la fonction `handleDelete(id)` qui :
+-   Envoie une requête `DELETE` vers `/tasks/:id`
+-   Supprime localement la tâche de l'état `tasks`
+
+### 4\. Modification de tâche
+
+-   Le champ `TextField` de chaque tâche est éditable directement.
+-   Lorsque l’utilisateur modifie le texte, il est stocké dans l’état `taskEditing`.
+-   Un bouton "Mettre à jour" envoie :
+-   Une requête `PUT` vers `/tasks/:id` avec le nouveau nom
+-   Puis recharge la liste des tâches
+
+## UI 
+-   Interface responsive et claire grâce à Material UI
+-   Validation de champ : empêche l’ajout ou la modification de tâches vides
+-   Expérience fluide avec mise à jour en temps réel des tâches
+
+## Backend 
+
+- https://github.com/nassimelaouad/todo_backend
