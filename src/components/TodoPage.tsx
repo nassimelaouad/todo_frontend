@@ -20,7 +20,7 @@ import { Task } from "../index";
 const TodoPage = () => {
   const api = useFetch();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskName, setNewTaskName] = useState(""); // État pour une nouvelle tâche
+  const [newTaskName, setNewTaskName] = useState(""); 
   const [taskEditing, setTaskEditing] = useState<{ [id: number]: string }>({});
 
   // Récupérer toutes les tâches depuis le backend
@@ -32,10 +32,10 @@ const TodoPage = () => {
   // Ajouter une nouvelle tâche
   const handleSave = async () => {
     try {
-      if (!newTaskName.trim()) return; // Empêcher l'ajout de tâches vides
+      if (!newTaskName.trim()) return; 
       await api.post("/tasks", { name: newTaskName });
-      setNewTaskName(""); // Réinitialiser le champ
-      await handleFetchTasks(); // Rafraîchir la liste
+      setNewTaskName(""); // 
+      await handleFetchTasks(); 
     } catch (error) {
       console.error("Error saving task:", error);
     }
