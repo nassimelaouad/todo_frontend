@@ -40,7 +40,22 @@ const TodoPage = () => {
       console.error("Error saving task:", error);
     }
   };
+  // Mettre à jour une tâche
+  const handleUpdate = async (id: number) => {
+    try {
+      const updatedName = taskEditing[id];
+      if (!updatedName.trim()) return;
 
+      await api.put(`/tasks/${id}`, { name: updatedName });
+      setTaskEditing((prev) => {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      });
+      await handleFetchTasks();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
 
   // Supprimer une tâche
   const handleDelete = async (id: number) => {
@@ -90,7 +105,18 @@ const TodoPage = () => {
                     />
                   </TableCell>
                   <TableCell align="center">
-                
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleUpdate(task.id)}
+                      disabled={
+                        !taskEditing[task.id] ||
+                        taskEditing[task.id] === task.name
+                      }
+                      sx={{ mr: 1 }}
+                    >
+                      Modifier
+                    </Button>
                     <IconButton
                       color="error"
                       onClick={() => handleDelete(task.id)}
